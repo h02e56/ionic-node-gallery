@@ -14,10 +14,12 @@ module.exports = function api() {
   	 */
   	seneca.act('role:web',{use:function(req,res,next) {
 
+  		res.set('Content-Type', 'application/json');
+
 	    if( req.url == '/upload' && req.method == 'POST') {
 
 	    	var options = {
-	    		encoding:'base64',
+	    		// encoding:'base64',
 	    		autoFiles: true,
 	    		uploadDir: uploadDir
 	    	}
@@ -25,37 +27,29 @@ module.exports = function api() {
 	    	var form = new multiparty.Form(options);
 		 	
 		    form.parse(req, function(err, fields, files) {
-		    	if (err) sendError(err);
-		    });
+		    	if (err) console.log(err);
+		    })
 
 		    //events
 		    //on write to disk rename it and send ok
 		    form.on('file', function (name, file) {
 		    	var newPath = path.join(uploadDir, file.originalFilename)
 		    	fs.rename(file.path, newPath,  function(err){
-		    		if(err) sendError(err)
-		      		else{
-		      			res.send({
-		      				ok:true,
-		      				filename: name
-		      			})
-		      		}
+		    		 console.log(err);
 		    	})
+	    		res.send({
+	      			ok:true,
+	      			filename: name
+	      		})
 		    })
-
-		   var sendError = function sendError (err) {
-				res.send({
-		      		ok:false,
-		      		why:err
-		      	});
-		    }
 		   
 	    }
 
 	    //get current images
-	    if (req.url == '/getimages') {
+	    if (req.url == '/gallery') {
 	    	var images = seneca.make$('images')
 	    	images.list$({},function(err,list){
+	    		if (err) console.log(err);
 				res.send({
 			      	ok:true,
 			    	data:list
@@ -64,5 +58,8 @@ module.exports = function api() {
 	    }
 
 	    else next()
+
 	  }})
+	
+
  }

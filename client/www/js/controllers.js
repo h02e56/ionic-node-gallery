@@ -4,6 +4,7 @@ var urls = config.urls;
 module.exports = angular.module('mygallery.controllers', [])
 
 	.controller('AccountCtrl', function($scope, $http, $cordovaCamera, $cordovaFileTransfer) {
+
 		$scope.message = ''
 
 		//camera stuff
@@ -103,6 +104,28 @@ module.exports = angular.module('mygallery.controllers', [])
 			  	// }, false);
 		    }
 		});
+
+		//get current gallery
+		$http.get(urls.gallery)
+			.success(function(data, status, headers, config) {
+				if(data.ok === true) {
+		   			//hide modal loading
+		   			// $scope.hideLoading()
+	            	$scope.items = data.data
+	            	$scope.apply()
+	            }else{
+	            	// $scope.err = data.why
+	            	
+	        		// $scope.openModal()    	
+	            }
+			})
+			.error(function(data, status, headers, config) {
+				alert(data.why)
+				
+				  	// $scope.openModal()
+			});	        
+
+		
 		
 	})
 

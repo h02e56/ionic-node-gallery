@@ -4,8 +4,18 @@
     <section id="gallery">
     	<button class="button" ng-click="capturePhoto()">Capture Photo</button> 
     	<p ng-model="message">,essafe{{message}}</p>
+    	<div class="list">
+
+	        <a ng-repeat="item in items" 
+	           href="#/{{item.id}}"
+	           class="item item-thumbnail-left">
+
+	          <img ng-src="{{ item.path }}">
+	          <h2>{{ item.name }}</h2>
+	        </a>
+
+      	</div>
     	<img src="" id='myImage'>
-    	<span>gallery</span>
     </section>
   </ion-content>
 </ion-view>
