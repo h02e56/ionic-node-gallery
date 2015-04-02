@@ -4,6 +4,8 @@ var request = require('request')
 var config = require('./config.js')
 var port = config.port;
 
+var fs = require('fs')
+
 test('test auth plugin', function(t){
 
   var url = 'http://127.0.0.1:' + port +'/auth/login'
@@ -70,3 +72,6 @@ test('registration', function(t){
         }
     )
 })
+
+
+

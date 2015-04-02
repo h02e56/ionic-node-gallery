@@ -2,6 +2,7 @@
 
 var env = process.env.NODE_ENV || 'development'
 
+var fs = require('fs');
 var config = require('./config.js');
 var argv = require('minimist')(process.argv.slice(2));
 var port = argv['p'] || config.port || 3000
@@ -24,7 +25,7 @@ seneca.ready(function(err){
    
 	//start all stuff
 	seneca.use('user')
-	seneca.use('auth', {redirect:{always:true}} )
+	seneca.use('auth', {redirect:{always:false}} )
 	seneca.use('./api.js')
 
 	//create a rapid user for test

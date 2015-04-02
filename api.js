@@ -1,37 +1,68 @@
 "use strict";
 
 var multiparty = require('multiparty');
-var util = require('util')
 
-module.exports = function api() {
+var uploadDir = './images'
+var path = require('path')
+var fs = require('fs')
+
+module.exports = function api() {	
 	
 	var seneca = this;
-  	
   	/*
   	routes mapping
   	 */
-  	 seneca.act('role:web',{use:function(req,res,next) {
+  	seneca.act('role:web',{use:function(req,res,next) {
 
 	    if( req.url == '/upload' ) {
-	    	var form = new multiparty.Form();
+
+	    	var options = {
+	    		encoding:'base64',
+	    		autoFiles: true,
+	    		uploadDir: uploadDir
+	    	}
+
+	    	var form = new multiparty.Form(options);
 		 	
 		    form.parse(req, function(err, fields, files) {
-		    	if (err) {
-				    res.writeHead(400, {'content-type': 'text/plain'});
-				    res.end("invalid request: " + err.message);
-				    return;
-				}
-		      	res.writeHead(200, {'content-type': 'text/plain'});
-		      	res.end(util.inspect({fields: fields, files: files}));
+		    	if (err) return sendError(err);
 		    });
 
-	    	// console.log('upload', req.files)
-	    	// res.send({
-	    	// 	message: 'entra'
-	    	// })
+		    //events
+		    //on write to disk rename it and send ok
+		    form.on('file', function (name, file) {
+		    	var newPath = path.join(uploadDir, file.originalFilename)
+		    	console.log(name, file, newPath)
+		    	fs.rename(file.path, newPath,  function(err){
+		    		if(err) return sendError(err)
+		    		res.writeHead(200, {'content-type': 'text/plain'});
+		      		res.send({
+		      			ok:true,
+		      			filename: naem
+		      		});
+		    	})
+		    })
+
+		   var sendError = function sendError (err) {
+				res.send({
+		      		ok:true,
+		      		why:err
+		      	});
+		    }
+		   
 	    }
 
-	    // else this request is nothing to do with us!
+	    //get current images
+	    if (req.url == '/getimages') {
+	    	var images = seneca.make$('images')
+	    	images.list$({},function(err,list){
+				res.send({
+			      	ok:true,
+			    	data:list
+			    });  	
+			})	    	
+	    }
+
 	    else next()
 	  }})
  }
