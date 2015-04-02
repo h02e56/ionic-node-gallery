@@ -1,8 +1,10 @@
+var config = require('./config')
+var urls = config.urls;
+
 module.exports = angular.module('mygallery.controllers', [])
 
 	.controller('AccountCtrl', function($scope, $http, $cordovaCamera, $cordovaFileTransfer) {
-		
-		var url = "/upload";
+		$scope.message = ''
 
 		//camera stuff
 		document.addEventListener("deviceready", function () {
@@ -37,58 +39,61 @@ module.exports = angular.module('mygallery.controllers', [])
 					var gallery = document.getElementById('gallery'); 
 					var image = document.createElement('img')
 					// var image = document.getElementById('myImage');
-					image.src = "data:image/jpeg;base64," + imageData;
+					img.src = "data:image/jpeg;base64," + imageData;
 					// image.style="display:inline-block"
 					gallery.appendChild(image)
 
-					//upload file
-					// uploadPhoto()
+					uploadPhoto(imageData)
 					
 				}, function (err) {
 					alert(err)
 				});
 		    }
 
+
 		     //upload to server
 		    function uploadPhoto(data) {	
-		    	// var filePath = Camera.DestinationType.FILE_URI;//path to current image
-			    var trustHosts = true;
-			    var options = {};
-			    
-			    //REQUEST OPTIONS
-			    //we are sending base64
-			    var req = {
-					method: 'POST',
-					url: url,
-					headers: {
-						'Content-Type': 'application/json'
-					},
-					data: {
-						data:'dds'
-					}
-				}
-				var data = {
-					test:'tes'
-				}
-			  
-			    $http.post(url, data)
-			    	.success(function(data, status, headers, config) {
-						alert(data)
-				   		if(data.ok === true) {
-				   			//hide modal loading
-				   			alert('ok', data.message)
-			            }else{
-			            	alert(data.err) 
-			            }
-					})
-					.error(function(data, status, headers, config) {
-						alert(data)
-						alert(status)
-						alert(JSON.stringify(headers))
-					});	        
+		    	var url = urls.upload;
+		    	alert(url)
+		  	
+	  		// 	var uploadOptions = new FileUploadOptions();
+					// uploadOptions.fileKey = "file";
+					// uploadOptions.fileName = data.substr(data.lastIndexOf('/') + 1);
+					// uploadOptions.mimeType = "image/jpeg";
+					// uploadOptions.chunkedMode = false;
+
+					// $cordovaFile.uploadFile(url, data, uploadOptions).then(function(result) {
+					// 		// Success!
+					// 		alert(result)
+					// 	}, function(err) {
+					// 		alert(err)
+					// 	})
+					// ;
+
+		  //   	var formData = {
+		  //   		file: {
+		  //   			value: new Buffer(data, 'base64'),
+		  //   			options:{
+		  //   				contentType: 'image/jpg'
+		  //   			}
+		  //   		}
+		  //   	}
+				// request({url: url, formData: formData}, function optionalCallback(err, httpResponse, body) {
+				// 	if (err) {
+				//     	return alert('upload failed:', err);
+				//   	}
+				//   	alert('Upload successful!' + body);
+				//   	$scope.message = body
+				// });    	
+
+		    // 	var filePath = $scope.picData;//path to current image
+			   //  var trustHosts = true;
+			   //  var options = {};
+			           
 			  	// $cordovaFileTransfer.upload(url, filePath, options, trustHosts)
 				  //   .then(function(result) {
 				  //       // Success!
+				  //       alert(result)
 				  //   }, function (err) {
 				  //    	alert(err)
 				  //   }, function (progress) {
@@ -122,7 +127,7 @@ module.exports = angular.module('mygallery.controllers', [])
 		};
 		
 		$scope.submit = function(user){
-			var url = '/auth/register';
+			var url = urls.register
 						
 			//modal loading
 			$scope.showLoading('loading...')
@@ -178,7 +183,7 @@ module.exports = angular.module('mygallery.controllers', [])
 		};
 		
 		$scope.submit = function(user){
-			var url = '/auth/login';
+		 var url = urls.login
 						
 			//modal loading
 			$scope.showLoading('loading...')

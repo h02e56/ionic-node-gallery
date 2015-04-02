@@ -24,7 +24,7 @@ seneca.ready(function(err){
    
 	//start all stuff
 	seneca.use('user')
-	seneca.use('auth', {redirect:{always:false}} )
+	seneca.use('auth', {redirect:{always:true}} )
 	seneca.use('./api.js')
 
 	//create a rapid user for test
