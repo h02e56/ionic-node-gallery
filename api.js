@@ -14,7 +14,7 @@ module.exports = function api() {
   	 */
   	seneca.act('role:web',{use:function(req,res,next) {
 
-	    if( req.url == '/upload' ) {
+	    if( req.url == '/upload' && req.method == 'POST') {
 
 	    	var options = {
 	    		encoding:'base64',
@@ -25,27 +25,27 @@ module.exports = function api() {
 	    	var form = new multiparty.Form(options);
 		 	
 		    form.parse(req, function(err, fields, files) {
-		    	if (err) return sendError(err);
+		    	if (err) sendError(err);
 		    });
 
 		    //events
 		    //on write to disk rename it and send ok
 		    form.on('file', function (name, file) {
 		    	var newPath = path.join(uploadDir, file.originalFilename)
-		    	console.log(name, file, newPath)
 		    	fs.rename(file.path, newPath,  function(err){
-		    		if(err) return sendError(err)
-		    		res.writeHead(200, {'content-type': 'text/plain'});
-		      		res.send({
-		      			ok:true,
-		      			filename: naem
-		      		});
+		    		if(err) sendError(err)
+		      		else{
+		      			res.send({
+		      				ok:true,
+		      				filename: name
+		      			})
+		      		}
 		    	})
 		    })
 
 		   var sendError = function sendError (err) {
 				res.send({
-		      		ok:true,
+		      		ok:false,
 		      		why:err
 		      	});
 		    }
